@@ -1,31 +1,27 @@
-FROM ubuntu
+# Use lightweight Node image
+FROM node:18
 
-# Install necessary packages
-#============================
-RUN apt-get update && apt-get install -y 
-RUN apt install nodejs -y
-RUN apt install npm -y
-
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy source files and package.json
-COPY axiosConfig.js /app/src/api/axiosConfig.js
-COPY ./src /app/src
-COPY ./package.json /app
-<<<<<<< HEAD
-COPY ./index.html /app/public/index.html
-=======
-COPY index.html /app/public/index.html
-COPY ./public /app/public
->>>>>>> 373e56fa54060ee6cc5fe8cb46e7a333d2f7bb96
+# Copy package files first
+COPY package*.json ./
 
-# Build the application
+# Install dependencies
+RUN apt-get update && apt-get install -y 
 RUN npm install
-RUN npm start
-# Copy the built JAR file to the container
 
+# Copy all project files
+COPY . .
 
+# Build React app
+RUN npm run build
+
+# Install serve package for production
+RUN npm install -g serve
+
+# Expose frontend port
 EXPOSE 3000
 
-#ENTRYPOINT ["java", "-jar", "app.jar"]
+# Serve production build
+CMD ["serve", "-s", "build", "-l", "3000"]
