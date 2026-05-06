@@ -14,6 +14,7 @@ COPY axiosConfig.js /app/src/api/axiosConfig.js
 COPY ./src /app/src
 COPY ./package.json /app
 COPY ./index.html /app/public/index.html
+COPY ./public /app/public
 
 # Build the application
 RUN npm install
